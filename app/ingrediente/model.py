@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, List
 
+from sqlalchemy import Column, String
 from sqlmodel import Field, Relationship
 
 from app.core.base_model import BaseModel
@@ -12,8 +13,9 @@ if TYPE_CHECKING:
 class Ingrediente(BaseModel, table=True):
     __tablename__ = "ingrediente"
 
-    nombre: str = Field(index=True)
-    stock: float = Field(default=0)
+    nombre: str = Field(sa_column=Column(String(100), nullable=False, unique=True, index=True))
+    descripcion: str
+    es_alergeno: bool = Field(default=False)
 
     productos: List["Producto"] = Relationship(
         back_populates="ingredientes_relacionados",

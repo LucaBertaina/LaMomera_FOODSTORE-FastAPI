@@ -19,7 +19,6 @@ from app.ingrediente.router import router as ingrediente_router
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
 
-    # Keep dev DB schema aligned when soft-delete fields are added after initial table creation.
     with engine.begin() as connection:
         for table_name in ("categoria", "ingrediente", "producto"):
             connection.execute(
@@ -36,6 +35,51 @@ async def lifespan(app: FastAPI):
         connection.execute(
             text(
                 "ALTER TABLE producto ADD COLUMN IF NOT EXISTS ingredientes VARCHAR NOT NULL DEFAULT ''"
+            )
+        )
+
+        connection.execute(
+            text(
+                "ALTER TABLE producto ADD COLUMN IF NOT EXISTS stock_cantidad INTEGER NOT NULL DEFAULT 0"
+            )
+        )
+
+        connection.execute(
+            text(
+                "ALTER TABLE categoria ADD COLUMN IF NOT EXISTS parent_id BIGINT REFERENCES categoria(id)"
+            )
+        )
+        connection.execute(
+            text(
+                "ALTER TABLE categoria ADD COLUMN IF NOT EXISTS imagen_url TEXT NOT NULL DEFAULT ''"
+            )
+        )
+
+        connection.execute(
+            text(
+                "ALTER TABLE ingrediente ADD COLUMN IF NOT EXISTS descripcion TEXT NOT NULL DEFAULT ''"
+            )
+        )
+        connection.execute(
+            text(
+                "ALTER TABLE ingrediente ADD COLUMN IF NOT EXISTS es_alergeno BOOLEAN NOT NULL DEFAULT FALSE"
+            )
+        )
+
+        connection.execute(
+            text(
+                "ALTER TABLE producto_categoria ADD COLUMN IF NOT EXISTS es_principal BOOLEAN NOT NULL DEFAULT FALSE"
+            )
+        )
+        connection.execute(
+            text(
+                "ALTER TABLE producto_categoria ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()"
+            )
+        )
+
+        connection.execute(
+            text(
+                "ALTER TABLE producto_ingrediente ADD COLUMN IF NOT EXISTS es_removible BOOLEAN NOT NULL DEFAULT FALSE"
             )
         )
 

@@ -4,7 +4,12 @@ from sqlmodel import Session
 
 from app.core.database import get_session
 from app.categoria import service
-from app.categoria.schema import CategoriaCreate, CategoriaRead, CategoriaUpdate
+from app.categoria.schema import (
+    CategoriaCreate,
+    CategoriaRead,
+    CategoriaTreeRead,
+    CategoriaUpdate,
+)
 
 router = APIRouter(prefix="/categorias", tags=["Categorias"])
 
@@ -15,6 +20,11 @@ def create_categoria(data: CategoriaCreate, session: Session = Depends(get_sessi
 @router.get("/", response_model=List[CategoriaRead])
 def list_categorias(session: Session = Depends(get_session)):
     return service.get_categorias(session)
+
+
+@router.get("/tree", response_model=List[CategoriaTreeRead])
+def list_categorias_tree(session: Session = Depends(get_session)):
+    return service.get_categorias_tree(session)
 
 @router.put("/{cat_id}", response_model=CategoriaRead)
 def update_categoria(cat_id: int, data: CategoriaUpdate, session: Session = Depends(get_session)):

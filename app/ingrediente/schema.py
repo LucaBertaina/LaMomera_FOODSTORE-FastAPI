@@ -5,7 +5,8 @@ from sqlmodel import SQLModel
 
 class IngredienteBase(SQLModel):
     nombre: str
-    stock: float = 0
+    descripcion: str
+    es_alergeno: bool = False
 
 
 class IngredienteCreate(IngredienteBase):
@@ -14,7 +15,8 @@ class IngredienteCreate(IngredienteBase):
 
 class IngredienteUpdate(SQLModel):
     nombre: Optional[str] = None
-    stock: Optional[float] = None
+    descripcion: Optional[str] = None
+    es_alergeno: Optional[bool] = None
 
 
 class IngredienteRead(IngredienteBase):

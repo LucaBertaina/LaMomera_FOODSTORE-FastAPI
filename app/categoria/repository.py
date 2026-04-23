@@ -30,3 +30,11 @@ class CategoriaRepository(BaseRepository[Categoria]):
             .limit(limit)
         )
         return self.session.exec(stmt).all()
+
+    def get_all_for_tree(self) -> Sequence[Categoria]:
+        stmt = (
+            select(Categoria)
+            .where((Categoria.borrado.is_(False)) | (Categoria.borrado.is_(None)))
+            .order_by(Categoria.id)
+        )
+        return self.session.exec(stmt).all()
